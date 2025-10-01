@@ -14,9 +14,8 @@
     <div id="root"></div>
     
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
-        // Icônes simplifiées en SVG
         const Download = () => (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -57,6 +56,23 @@
             const [votes, setVotes] = useState([]);
             const [searchTerm, setSearchTerm] = useState('');
             const [showStats, setShowStats] = useState(false);
+
+            // Charger les données depuis localStorage au démarrage
+            useEffect(() => {
+                const savedVotes = localStorage.getItem('votesAG');
+                if (savedVotes) {
+                    try {
+                        setVotes(JSON.parse(savedVotes));
+                    } catch (e) {
+                        console.error('Erreur lors du chargement des votes:', e);
+                    }
+                }
+            }, []);
+
+            // Sauvegarder les données dans localStorage à chaque modification
+            useEffect(() => {
+                localStorage.setItem('votesAG', JSON.stringify(votes));
+            }, [votes]);
 
             const ajouterVote = () => {
                 const nouveauVote = {
